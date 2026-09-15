@@ -18,7 +18,7 @@ from scipy.spatial.distance import cdist
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE = ROOT / "assets/source/mrr.png"
+SOURCE = ROOT / "assets/source/byakuya.jpg"
 ASSETS = ROOT / "assets"
 LOGOS = Path(__file__).resolve().parent / "logos"
 DATA = Path(__file__).resolve().parent / "data"
@@ -30,21 +30,21 @@ TRAVELLER_COUNT = 900
 SEED = 314159
 
 ROWS = [
-    ("Subject", "Emmi"),
-    ("Role", "Blockchain Engineer · Tech Lead"),
-    ("Origin", "Bolivia"),
-    ("Education", "Community · LATAM"),
-    ("Status", "Building + Learning + Shipping"),
-    ("ToolChain", "Sublime · Cursor · Git"),
-    ("Core.Lang", "TypeScript · Rust · Solidity"),
-    ("Core.Frontend", "React · Next.js · Three.js · Tailwind"),
-    ("Core.Backend", "Node · Python"),
-    ("Core.Database", "Postgres · Supabase"),
+    ("Subject", "Casvall"),
+    ("Role", "Software Engineer · Full Stack Developer"),
+    ("Origin", "Indonesia"),
+    ("Education", "SMK Negeri 2 Yogyakarta · Yogyakarta"),
+    ("Status", "Building + Learning + Internshiping"),
+    ("ToolChain", "VScode · Cursor · Git"),
+    ("Core.Lang", "TypeScript · Rust · C#"),
+    ("Core.Frontend", "React · Next.js · Vue · Tailwind"),
+    ("Core.Backend", "Node · Java"),
+    ("Core.Database", "Postgres · SQLServer"),
     ("Core.Infra", "Vercel · Docker · AWS"),
-    ("Grid.Mail", "—"),
-    ("Grid.LinkedIn", "/in/emmi-aguilar-rivero"),
-    ("Grid.GitHub", "emmi-lili"),
-    ("Grid.X", "@emmcriptada"),
+    ("Grid.Mail", "brahmantaraputraw@gmail.com"),
+    ("Grid.LinkedIn", "/in/brahmantara-putra-wirabhakti"),
+    ("Grid.GitHub", "BrahmantaraPutra"),
+    ("Grid.X", "@Casvall"),
 ]
 
 THEMES = {
@@ -158,8 +158,16 @@ def floyd_steinberg(gray: np.ndarray) -> np.ndarray:
 def portrait_points(theme: str, rng: np.random.Generator) -> np.ndarray:
     """Return sampled x/y banner coordinates from a 300x340 dither grid."""
     source = Image.open(SOURCE).convert("RGBA")
-    # Tighter head + shoulders crop so face detail fills the VISUAL.MAP frame.
-    crop = source.crop((18, 28, 390, 450)).resize((300, 340), Image.Resampling.LANCZOS)
+    # Cover-resize: scale so the image fills the full 300x340 grid (no letterbox),
+    # then center-crop to exactly 300x340. Works for any source image or aspect ratio.
+    TARGET_W, TARGET_H = 300, 340
+    src_w, src_h = source.size
+    scale = max(TARGET_W / src_w, TARGET_H / src_h)
+    new_w, new_h = round(src_w * scale), round(src_h * scale)
+    resized = source.resize((new_w, new_h), Image.Resampling.LANCZOS)
+    left = (new_w - TARGET_W) // 2
+    top = (new_h - TARGET_H) // 2
+    crop = resized.crop((left, top, left + TARGET_W, top + TARGET_H))
     rgb = crop.convert("RGB")
     alpha = np.asarray(crop.getchannel("A"), dtype=np.float32) / 255.0
 
@@ -282,7 +290,7 @@ def render_svg(
         '<svg xmlns="http://www.w3.org/2000/svg" '
         f'width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" '
         'aria-labelledby="title desc">',
-        "<title id=\"title\">Emmi's live system profile</title>",
+        "<title id=\"title\">Casvall's live system profile</title>",
         '<desc id="desc">Animated terminal profile with a dithered portrait and '
         "Rust, code, and Stellar silhouettes.</desc>",
         "<defs>",
@@ -401,7 +409,7 @@ def render_svg(
             f'stroke="{t["chrome"]}"/>',
             f'<text x="1055" y="111" text-anchor="middle" fill="{t["chrome"]}" '
             'font-family="ui-monospace,SFMono-Regular,Consolas,monospace" font-size="14" '
-            'font-weight="700">@emmi-lili</text>',
+            'font-weight="700">@Casvall</text>',
         ]
     )
 
@@ -435,7 +443,7 @@ def render_svg(
             "● ALL SYSTEMS NOMINAL</text>",
             f'<text x="1128" y="548" text-anchor="end" fill="{t["muted"]}" '
             'font-family="ui-monospace,SFMono-Regular,Consolas,monospace" font-size="11">'
-            "UTC-4 · LATAM NODE</text>",
+            "WIB · ID NODE</text>",
             "</svg>",
         ]
     )
