@@ -99,14 +99,18 @@ def make_logos() -> dict[str, Image.Image]:
     d.ellipse((174, 174, 226, 226), fill="black")
     logos["rust"] = rust
 
-    # </> mark built from broad, rounded strokes.
-    code = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-    d = ImageDraw.Draw(code)
-    stroke = 42
-    d.line([(154, 95), (66, 200), (154, 305)], fill="black", width=stroke, joint="curve")
-    d.line([(246, 95), (334, 200), (246, 305)], fill="black", width=stroke, joint="curve")
-    d.line([(225, 72), (174, 328)], fill="black", width=stroke)
-    logos["code"] = code
+    # </> mark built from broad, rounded strokes or load from disk.
+    code_path = LOGOS / "code.png"
+    if code_path.exists():
+        logos["code"] = Image.open(code_path).convert("RGBA")
+    else:
+        code = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+        d = ImageDraw.Draw(code)
+        stroke = 42
+        d.line([(154, 95), (66, 200), (154, 305)], fill="black", width=stroke, joint="curve")
+        d.line([(246, 95), (334, 200), (246, 305)], fill="black", width=stroke, joint="curve")
+        d.line([(225, 72), (174, 328)], fill="black", width=stroke)
+        logos["code"] = code
 
     # Stellar-inspired four-point star with a small connected node network.
     stellar = Image.new("RGBA", (size, size), (0, 0, 0, 0))
